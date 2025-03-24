@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Aplicación - Bacano RP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Formulario de Aplicación - Bacano RP</h1>
+        <form id="applicationForm">
+            <label for="nombre">Nombre en el juego:</label>
+            <input type="text" id="nombre" required>
+            
+            <label for="discord">Usuario de Discord:</label>
+            <input type="text" id="discord" required>
+            
+            <label for="rol">¿Para qué puesto aplicas?</label>
+            <select id="rol" required>
+                <option value="staff">Staff</option>
+                <option value="creador">Creador de Contenido</option>
+            </select>
+            
+            <div id="staffQuestions" class="hidden">
+                <label for="experiencia">¿Tienes experiencia en administración/moderación?</label>
+                <textarea id="experiencia"></textarea>
+                
+                <label for="normas">Explica una norma fundamental del rol y por qué es importante:</label>
+                <textarea id="normas"></textarea>
+                
+                <label for="solucion">Si ves a un jugador incumpliendo reglas, ¿qué harías?</label>
+                <textarea id="solucion"></textarea>
+
+                <!-- Nuevas preguntas para Staff -->
+                <label for="afk">¿Qué significa AFK DM?</label>
+                <textarea id="afk"></textarea>
+
+                <label for="gestionAfk">¿Cómo manejarías a un miembro que se encuentra en estado AFK DM?</label>
+                <textarea id="gestionAfk"></textarea>
+            </div>
+            
+            <div id="creatorQuestions" class="hidden">
+                <label for="plataforma">Plataforma donde creas contenido:</label>
+                <input type="text" id="plataforma">
+                
+                <label for="seguidores">Cantidad de seguidores:</label>
+                <input type="number" id="seguidores">
+                
+                <label for="contenido">Tipo de contenido que subes:</label>
+                <textarea id="contenido"></textarea>
+                
+                <label for="canal">Enlace a tu canal o perfil:</label>
+                <input type="url" id="canal">
+                
+                <label for="frecuencia">¿Con qué frecuencia subes contenido de Bacano RP?</label>
+                <select id="frecuencia">
+                    <option value="diario">Diario</option>
+                    <option value="semanal">Semanal</option>
+                    <option value="mensual">Mensual</option>
+                </select>
+            </div>
+            
+            <button type="submit">Enviar Solicitud</button>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById("rol").addEventListener("change", function() {
+            document.getElementById("staffQuestions").classList.toggle("hidden", this.value !== "staff");
+            document.getElementById("creatorQuestions").classList.toggle("hidden", this.value !== "creador");
+        });
+
+        document.getElementById("applicationForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const rol = document.getElementById("rol").value;
+            let mensaje = `Nueva solicitud para **${rol.toUpperCase()}**\n`;
+            mensaje += `**Nombre en el juego:** ${document.getElementById("nombre").value}\n`;
+            mensaje += `**Discord:** ${document.getElementById("discord").value}\n`;
+            
+            if (rol === "staff") {
+                mensaje += `**Experiencia:** ${document.getElementById("experiencia").value}\n`;
+                mensaje += `**Normas:** ${document.getElementById("normas").value}\n`;
+                mensaje += `**Solución:** ${document.getElementById("solucion").value}\n`;
+                mensaje += `**AFK DM:** ${document.getElementById("afk").value}\n`;
+                mensaje += `**Gestión AFK DM:** ${document.getElementById("gestionAfk").value}\n`;
+            } else {
+                mensaje += `**Plataforma:** ${document.getElementById("plataforma").value}\n`;
+                mensaje += `**Seguidores:** ${document.getElementById("seguidores").value}\n`;
+                mensaje += `**Contenido:** ${document.getElementById("contenido").value}\n`;
+                mensaje += `**Canal:** ${document.getElementById("canal").value}\n`;
+                mensaje += `**Frecuencia:** ${document.getElementById("frecuencia").value}\n`;
+            }
+            
+            fetch("https://discord.com/api/webhooks/1353155585687949352/cyrPgaHPZZFGFQKPShEk5NhDTww2tXGoR5ghKhiLTJxnVmr8j-xt11oswiOYs-VI9iEA", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: mensaje })
+            }).then(() => alert("Solicitud enviada con éxito"));
+        });
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #222; color: white; text-align: center; }
+        .container { max-width: 500px; margin: auto; background: #333; padding: 20px; border-radius: 10px; }
+        input, textarea, select, button { width: 100%; margin: 10px 0; padding: 10px; }
+        .hidden { display: none; }
+    </style>
+</body>
+</html>
